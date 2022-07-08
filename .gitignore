@@ -1,0 +1,14 @@
+*.pyc
+.idea/
+.vagrant/
+.pycharm_helpers/
+.ipython/
+dist/
+*.egg-info/
+build/
+*.sw*
+.coverage
+celerybeat-schedule.db
+.bash_history
+docker-compose.override.yaml
+__pycache__

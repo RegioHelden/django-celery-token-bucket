@@ -1,0 +1,7 @@
+bumpversion==0.6.0
+celery==5.2.7
+django-celery-beat==2.3.0
+flake8==4.0.1
+ipython==8.0.1
+mock==4.0.3                         # latest mocks independent from python release
+tblib==1.7.0

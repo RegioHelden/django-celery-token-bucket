@@ -1,0 +1,82 @@
+# Django celery token bucket
+
+A dynamic [token bucket](https://medium.com/analytics-vidhya/celery-throttling-setting-rate-limit-for-queues-5b5bf16c73ce) implementation using the database scheduler [django celery beat](https://github.com/celery/django-celery-beat).
+
+## How it's working
+
+The bucket is represented by a celery queue that will not be processed by a worker but just hold our tokens (messages). 
+Whenever a rate limited task should be run, the decorator tries to consume a message from that queue. If the queue is empty, the task gets retried after the defined timeout.  
+A periodic task will then refill the bucket with tokens whenever they should be available again.
+
+## Define a token bucket
+
+Buckets are defined in the Django config.
+
+Following example allows one thousand tokens per hour to throttle access to a rate limited third party API.
+
+Add to `settings.py` of your project.
+```python
+from typing import List
+
+from django_celery_token_bucket import TokenBucket
+
+
+CELERY_TOKEN_BUCKETS: List[TokenBucket] = [
+    TokenBucket(
+        name="my_api_client",
+        schedule=schedules.crontab(minute=0),  # once every hour
+        amount=1000,
+        maximum=1000,
+    )
+]
+```
+
+### name
+
+The name must only consist of letters, numbers and the underscore character as it's used in the name of the celery queue.
+
+### schedule
+
+A `celery.schedules.crontab` that defines when the tokens should be refilled.
+
+### amount
+
+The amount of tokens to add whenever the scheduled refill is run.
+
+### maximum
+
+The maximum amount of tokens our bucket can hold.
+
+## Use the rate_limit decorator
+
+The decorator will make sure that the task that gets decorated will not exceed the limit of available tokens.
+
+```python
+from my_app.celery import celery_app
+from django_celery_token_bucket.decorators import rate_limit
+
+@celery_app.task
+@rate_limit(token_bucket="my_api_client", retry_backoff=300)
+def my_tasK(*args, **kwargs):
+    return
+```
+
+The above task will try to consume a token from the `my_api_client` and retries after 300 seconds if no token is available.
+
+## Run the tests locally
+
+A docker-compose environment is provided to easily run the tests:
+
+```bash
+docker-compose run --rm django test
+```
+
+## Making a new release
+
+[bumpversion](https://github.com/peritus/bumpversion) is used to manage releases.
+
+Add your changes to the [CHANGELOG](./CHANGELOG.md), run
+```bash
+bumpversion <major|minor|patch>
+```
+and push (including tags).
