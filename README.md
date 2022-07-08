@@ -27,7 +27,7 @@ CELERY_TOKEN_BUCKETS: List[TokenBucket] = [
         schedule=schedules.crontab(minute=0),  # once every hour
         amount=1000,
         maximum=1000,
-    )
+    ),
 ]
 ```
 
@@ -46,6 +46,10 @@ The amount of tokens to add whenever the scheduled refill is run.
 ### maximum
 
 The maximum amount of tokens our bucket can hold.
+
+## Sync period tasks to refill the buckets
+
+A management command `token_bucket_register_periodic_tasks` is provided that should be run during deployment of your application to sync the period tasks and make sure that buckets get properly refilled.
 
 ## Use the rate_limit decorator
 
