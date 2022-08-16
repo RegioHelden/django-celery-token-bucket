@@ -44,7 +44,7 @@ class TokenBucket:
             defaults=dict(
                 queue="token_bucket",
                 kwargs=json.dumps(dict(name=self.name)),
-                task="celery_token_bucket.tasks.token_bucket_refill",
+                task="django_celery_token_bucket.tasks.token_bucket_refill",
                 interval=None,
                 crontab=crontabschedule,
             ),

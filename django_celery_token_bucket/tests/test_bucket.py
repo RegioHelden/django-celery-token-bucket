@@ -52,7 +52,7 @@ class TokenBucketTestCase(TestCase):
             defaults=dict(
                 queue="token_bucket",
                 kwargs='{"name": "my_custom_api"}',
-                task="celery_token_bucket.tasks.token_bucket_refill",
+                task="django_celery_token_bucket.tasks.token_bucket_refill",
                 interval=None,
                 crontab=token_bucket_get_or_create_schedule_return_value,
             ),
