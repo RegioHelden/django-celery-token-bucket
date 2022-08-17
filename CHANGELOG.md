@@ -1,5 +1,5 @@
 # Changelog
 
-## Unreleased
+## 1.0
 
-- Initial release
+- Initial release ([lociii](https://github.com/lociii), [Esquire-gh](https://github.com/Esquire-gh))
