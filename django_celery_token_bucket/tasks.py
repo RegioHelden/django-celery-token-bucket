@@ -14,17 +14,17 @@ def token_bucket_token():
 def token_bucket_refill(name: str, *args, **kwargs):
     token_bucket: TokenBucket
 
-    for token_bucket in settings.CELERY_TOKEN_BUCKETS:
-        # get the right bucket
-        if token_bucket.name != name:
-            continue
+    try:
+        token_bucket = settings.CELERY_TOKEN_BUCKETS[name]
+    except KeyError:
+        raise Exception(f"bucket '{name}' is not registered")
 
-        # prepare queue object
-        queue = Queue(name=token_bucket.get_queue_name(), max_length=token_bucket.maximum)
+    # prepare queue object
+    queue = Queue(name=token_bucket.get_queue_name(), max_length=token_bucket.maximum)
 
-        # fill it up
-        for _ in range(token_bucket.amount):
-            token_bucket_token.apply_async(queue=queue)
-        return
+    # fill it up
+    for _ in range(token_bucket.amount):
+        token_bucket_token.apply_async(queue=queue)
+    return
 
-    raise Exception(f"bucket '{name}' is not registered")
+
