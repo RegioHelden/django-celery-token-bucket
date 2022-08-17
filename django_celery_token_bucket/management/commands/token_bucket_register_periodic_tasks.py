@@ -17,7 +17,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         token_bucket: TokenBucket
-        for token_bucket in settings.CELERY_TOKEN_BUCKETS:
+        for _, token_bucket in settings.CELERY_TOKEN_BUCKETS.items():
             # add a periodic task to our main queue to refill the tokens
             token_bucket.create_periodic_task()
             logging.info(

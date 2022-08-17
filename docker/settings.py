@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import Dict
 import os
 
 from celery import schedules
@@ -76,17 +76,17 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_TOKEN_BUCKETS: List[TokenBucket] = [
-    TokenBucket(
+CELERY_TOKEN_BUCKETS: Dict[str, TokenBucket] = {
+    "my_custom_api": TokenBucket(
         name="my_custom_api",
         schedule=schedules.crontab(minute=0),  # once every hour
         amount=10,
         maximum=10,
     ),
-    TokenBucket(
+    "another_bucket": TokenBucket(
         name="another_bucket",
         schedule=schedules.crontab(minute=30, hour=3),  # 3:30am
         amount=10,
         maximum=100,
-    ),
-]
+    )
+}
