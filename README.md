@@ -2,7 +2,7 @@
 
 A dynamic [token bucket](https://medium.com/analytics-vidhya/celery-throttling-setting-rate-limit-for-queues-5b5bf16c73ce) implementation using the database scheduler [django celery beat](https://github.com/celery/django-celery-beat).
 
-## How it's working
+## How it Works
 
 The bucket is represented by a celery queue that will not be processed by a worker but just hold our tokens (messages). 
 Whenever a rate limited task should be run, the decorator tries to consume a message from that queue. If the queue is empty, the task gets retried after the defined timeout.  
@@ -16,24 +16,29 @@ Following example allows one thousand tokens per hour to throttle access to a ra
 
 Add to `settings.py` of your project.
 ```python
-from typing import List
-
+from typing import Dict
+from celery import schedules
 from django_celery_token_bucket import TokenBucket
 
+INSTALLED_APPS = [
+    ...,
+    'django_celery_token_bucket'
+]
 
-CELERY_TOKEN_BUCKETS: List[TokenBucket] = [
-    TokenBucket(
+CELERY_TOKEN_BUCKETS: Dict[str, TokenBucket] = {
+    "my_api_client": TokenBucket(
         name="my_api_client",
         schedule=schedules.crontab(minute=0),  # once every hour
         amount=1000,
         maximum=1000,
-    ),
-]
+    )
+}
 ```
 
 ### name
 
 The name must only consist of letters, numbers and the underscore character as it's used in the name of the celery queue.
+It should also be the same as the key in the CELERY_TOKEN_BUCKETS dictionary.
 
 ### schedule
 

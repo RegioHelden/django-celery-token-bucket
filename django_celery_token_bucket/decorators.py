@@ -1,7 +1,7 @@
 from django.conf import settings
 from functools import wraps
 from queue import Empty
-from bucket import TokenBucket
+from django_celery_token_bucket.bucket import TokenBucket
 
 
 def rate_limit(token_bucket_name: str, retry_backoff: int = 60):
