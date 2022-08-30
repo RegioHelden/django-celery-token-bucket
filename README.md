@@ -80,7 +80,23 @@ def my_tasK(*args, **kwargs):
 ```
 
 The above task will try to consume a token from the `my_api_client` and retries after 300 seconds if no token is
-available.
+available. A failed token retrieval will not increase the retry count.
+
+### affect_task_retries
+
+Defaults to `False`
+
+```python
+@celery_app.task(max_retries=3, retry_backoff=60)
+@rate_limit(token_bucket="my_api_client", retry_backoff=300, affect_task_retries=True)
+def my_tasK(*args, **kwargs):
+    return
+```
+
+In this scenario, a failed token retrieval will increase the retry count of the task decorator.
+If we cannot get a token on the first try, we will start over again with the 2nd try.
+
+Set `affect_task_retries` to `False` to retry token retrieval forever and only fail on max retries when the actual task execution fails.
 
 ## Run the tests locally
 
