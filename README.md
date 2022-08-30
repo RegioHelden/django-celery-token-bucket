@@ -53,6 +53,12 @@ The amount of tokens to add whenever the scheduled refill is run.
 
 The maximum amount of tokens our bucket can hold.
 
+### token_refill_queue
+
+Override this setting if you want token refill tasks for this bucket to be placed on a specific queue.
+This field is by default None. If no value is provided, the `CELERY_DEFAULT_QUEUE` setting is used or `celery`
+
+
 ## Sync period tasks to refill the buckets
 
 A management command `token_bucket_register_periodic_tasks` is provided that should be run during deployment of your
