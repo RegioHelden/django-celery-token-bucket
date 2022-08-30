@@ -1,7 +1,9 @@
 import json
 from dataclasses import dataclass
+from typing import Optional
 
 from celery import schedules
+from django.conf import settings
 
 
 @dataclass
@@ -19,6 +21,7 @@ class TokenBucket:
     schedule: schedules.crontab
     amount: int
     maximum: int
+    token_refill_queue: Optional[str] = None
 
     QUEUE_PREFIX: str = "token_bucket_"
     PERIODICTASK_PREFIX: str = "token_bucket_refill_"
@@ -39,10 +42,16 @@ class TokenBucket:
 
         crontabschedule = self._get_or_create_schedule()
 
+        if not self.token_refill_queue:
+            try:
+                self.token_refill_queue = settings.CELERY_DEFAULT_QUEUE
+            except AttributeError:
+                self.token_refill_queue = 'celery'
+
         PeriodicTask.objects.update_or_create(
             name=f"{self.PERIODICTASK_PREFIX}{self.name}",
             defaults=dict(
-                queue="token_bucket",
+                queue=self.token_refill_queue,
                 kwargs=json.dumps(dict(name=self.name)),
                 task="django_celery_token_bucket.tasks.token_bucket_refill",
                 interval=None,
