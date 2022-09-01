@@ -24,7 +24,7 @@ def rate_limit(token_bucket_name: str, retry_backoff: int = 60, affect_task_retr
                         return func(self, *args, **kwargs)
                     except Empty:
                         if not affect_task_retries:
-                            self.retries = self.retries - 1
+                            self.request.retries = self.request.retries - 1
                         self.retry(countdown=retry_backoff)
 
         return function
