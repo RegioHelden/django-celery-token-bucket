@@ -7,7 +7,7 @@ from django.conf import settings
 from django_celery_token_bucket.bucket import TokenBucket
 
 
-def rate_limit(token_bucket_name: str, retry_backoff: int = 60, affect_task_retries: bool = False):
+def rate_limit(token_bucket_name: str, countdown: int = 60, affect_task_retries: bool = False):
     def decorator_func(func):
         @wraps(func)
         def function(self, *args, **kwargs):
@@ -32,8 +32,8 @@ def rate_limit(token_bucket_name: str, retry_backoff: int = 60, affect_task_retr
                 if not affect_task_retries:
                     max_retries += 1
 
-                # no token left, retry with backoff
-                raise self.retry(countdown=retry_backoff, max_retries=max_retries)
+                # no token left, retry after countdown
+                raise self.retry(countdown=countdown, max_retries=max_retries)
 
         return function
 

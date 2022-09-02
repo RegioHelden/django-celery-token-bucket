@@ -75,29 +75,33 @@ from django_celery_token_bucket.decorators import rate_limit
 
 
 @celery_app.task(bind=True)
-@rate_limit(token_bucket="my_api_client", retry_backoff=300)
+@rate_limit(token_bucket="my_api_client", countdown=300)
 def my_tasK(self, *args, **kwargs):
     return
 ```
 
-The above task will try to consume a token from the `my_api_client` and retries after 300 seconds if no token is
-available. A failed token retrieval will not increase the retry count.
+### token_bucket
+
+Name of the token bucket to consume from. Must be defined in the settings (see above) or will fail with an Exception.
+
+### countdown
+
+Time to wait in seconds before the next try when no token is available.
 
 ### affect_task_retries
 
-Defaults to `False`
+Defaults to `False`  
+By default a failed token retrieval will not impact the retry count of your task. To change this behavior, set `affect_task_retries` to `True`.
 
 ```python
-@celery_app.task(bind=True, max_retries=3, retry_backoff=60)
-@rate_limit(token_bucket="my_api_client", retry_backoff=300, affect_task_retries=True)
+@celery_app.task(bind=True, max_retries=3, countdown=60)
+@rate_limit(token_bucket="my_api_client", countdown=300, affect_task_retries=True)
 def my_tasK(self, *args, **kwargs):
     return
 ```
 
 In this scenario, a failed token retrieval will increase the retry count of the task decorator.
 If we cannot get a token on the first try, we will start over again with the 2nd try.
-
-Set `affect_task_retries` to `False` to retry token retrieval forever and only fail on max retries when the actual task execution fails.
 
 ## Run the tests locally
 
