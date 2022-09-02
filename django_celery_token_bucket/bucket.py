@@ -9,12 +9,13 @@ from django.conf import settings
 @dataclass
 class TokenBucket:
     """
-    dataclass for holding details of a token bucket Queue
+    dataclass for holding details of a token bucket queue
 
     name: str -> the name of the queue (only letters and underscore)
     schedule: schedules.crontab -> how often tokens should be refilled
     amount: int -> the amount to refill for each schedule
     maximum: int -> the maximum amount of tokens the bucket can hold
+    token_refill_queue: str -> optional name of the queue that our refill job will be executed in
     """
 
     name: str
@@ -26,8 +27,13 @@ class TokenBucket:
     QUEUE_PREFIX: str = "token_bucket_"
     PERIODICTASK_PREFIX: str = "token_bucket_refill_"
 
-    def get_queue_name(self):
-        return f"{self.QUEUE_PREFIX}{self.name}"
+    def get_queue(self):
+        from kombu.entity import Queue
+        return Queue(
+            name=f"{self.QUEUE_PREFIX}{self.name}",
+            max_length=self.maximum,
+            durable=True,
+        )
 
     def _get_or_create_schedule(self):
         from django_celery_beat.models import CrontabSchedule

@@ -8,6 +8,17 @@ from django_celery_token_bucket.bucket import TokenBucket
 
 
 class TokenBucketTestCase(TestCase):
+    @mock.patch("kombu.entity.Queue")
+    def test_get_queue(self, mock_queue: mock.Mock):
+        TokenBucket(
+            name="my_custom_api",
+            schedule=schedules.crontab(minute=0),
+            amount=10,
+            maximum=10,
+        ).get_queue()
+
+        mock_queue.assert_called_once_with(name="token_bucket_my_custom_api", max_length=10, durable=True)
+
     @mock.patch("django_celery_beat.models.CrontabSchedule")
     def test_get_or_create_schedule(self, mock_crontabschedule):
         """

@@ -21,8 +21,8 @@ class TokenBucketTokenTaskTestCase(TestCase):
 
 
 class TokenBucketRefillTaskTestCase(TestCase):
-    @mock.patch("kombu.Queue", return_value=QUEUE_CONSTANT)
-    def test_not_called(self, mock_queue: mock.Mock):
+    @mock.patch("django_celery_token_bucket.bucket.TokenBucket.get_queue", return_value=QUEUE_CONSTANT)
+    def test_not_called(self, mock_token_bucket_get_queue: mock.Mock):
         """
         make sure nothing happens when we try to refill a non-existing bucket
         """
@@ -30,18 +30,18 @@ class TokenBucketRefillTaskTestCase(TestCase):
             tasks.token_bucket_refill(name="does_not_exist")
 
         # make sure no queue has been set up
-        mock_queue.assert_not_called()
+        mock_token_bucket_get_queue.assert_not_called()
 
     @mock.patch("django_celery_token_bucket.tasks.token_bucket_token.apply_async")
-    @mock.patch("django_celery_token_bucket.tasks.Queue", return_value=QUEUE_CONSTANT)
-    def test_called(self, mock_queue: mock.Mock, mock_token_bucket_token_apply_async: mock.Mock):
+    @mock.patch("django_celery_token_bucket.bucket.TokenBucket.get_queue", return_value=QUEUE_CONSTANT)
+    def test_called(self, mock_token_bucket_get_queue: mock.Mock, mock_token_bucket_token_apply_async: mock.Mock):
         """
         make sure that the right queue gets refilled with the right amount of tokens
         """
         tasks.token_bucket_refill(name="my_custom_api")
 
         # make sure the queue is set up correctly
-        mock_queue.assert_called_once_with(name="token_bucket_my_custom_api", max_length=10)
+        mock_token_bucket_get_queue.assert_called_once()
 
         # check that we have the right refill calls
         excpected_calls = []

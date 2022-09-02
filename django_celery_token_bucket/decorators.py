@@ -1,5 +1,6 @@
 from functools import wraps
-from queue import Empty
+from kombu.connection import Connection
+from kombu.entity import Queue
 
 from django.conf import settings
 
@@ -10,22 +11,29 @@ def rate_limit(token_bucket_name: str, retry_backoff: int = 60, affect_task_retr
     def decorator_func(func):
         @wraps(func)
         def function(self, *args, **kwargs):
-            with self.app.connection_for_read() as conn:
-                try:
-                    token_bucket: TokenBucket = settings.CELERY_TOKEN_BUCKETS[token_bucket_name]
-                    queue_name = token_bucket.get_queue_name()
-                except KeyError:
-                    raise Exception(f"bucket '{token_bucket_name}' is not registered")
+            try:
+                token_bucket: TokenBucket = settings.CELERY_TOKEN_BUCKETS[token_bucket_name]
+                token_queue: Queue = token_bucket.get_queue()
+            except KeyError:
+                raise Exception(f"bucket '{token_bucket_name}' is not registered")
 
-                with conn.SimpleQueue(queue_name, queue_opts={'max_length': token_bucket.maximum}) as queue:
-                    try:
-                        message = queue.get(block=True, timeout=5)
-                        message.ack()
-                        return func(self, *args, **kwargs)
-                    except Empty:
-                        if not affect_task_retries:
-                            self.request.retries = self.request.retries - 1
-                        self.retry(countdown=retry_backoff)
+            connection: Connection
+            with self.app.connection_for_read() as connection:
+                # bind queue to a channel of our connection
+                token_queue.maybe_bind(channel=connection.default_channel)
+
+                # try to get a message from the queue
+                message = token_queue.get(no_ack=True)
+                if message:
+                    return func(self, *args, **kwargs)
+
+                # decide if we need to increase the maximum retries
+                max_retries = self.request.retries
+                if not affect_task_retries:
+                    max_retries += 1
+
+                # no token left, retry with backoff
+                raise self.retry(countdown=retry_backoff, max_retries=max_retries)
 
         return function
 
