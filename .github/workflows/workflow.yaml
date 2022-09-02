@@ -18,6 +18,7 @@ jobs:
         django:
           - django32
           - django40
+          - django41
 
     steps:
       - uses: actions/checkout@v2
