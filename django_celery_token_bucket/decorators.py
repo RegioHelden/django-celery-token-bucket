@@ -27,13 +27,12 @@ def rate_limit(token_bucket_name: str, countdown: int = 60, affect_task_retries:
                 if message:
                     return func(self, *args, **kwargs)
 
-                # decide if we need to increase the maximum retries
-                max_retries = self.request.retries
+                # eventually reduce retry count
                 if not affect_task_retries:
-                    max_retries += 1
+                    self.request.retries = self.request.retries - 1
 
                 # no token left, retry after countdown
-                raise self.retry(countdown=countdown, max_retries=max_retries)
+                raise self.retry(countdown=countdown)
 
         return function
 
