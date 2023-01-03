@@ -105,10 +105,10 @@ If we cannot get a token on the first try, we will start over again with the 2nd
 
 ## Run the tests locally
 
-A docker-compose environment is provided to easily run the tests:
+A docker compose environment is provided to easily run the tests:
 
 ```bash
-docker-compose run --rm django test
+docker compose run --rm app test
 ```
 
 ## Making a new release

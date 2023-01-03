@@ -36,7 +36,7 @@ setup(
     install_requires=[
         'celery>=5.0.0',
         'Django>=3.2',
-        'django-celery-beat>=2.3.0',
+        'django-celery-beat>=2.4.0',
         'kombu>=5.2.4',
     ],
     license='MIT',
