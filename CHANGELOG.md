@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.0] - 2023-01-03
+
+Contributors: [@lociii](https://github.com/lociii)
+
+### Changed
+
+- The token holding job `token_bucket_token` will now ignore it's result and should not pop up in result backends stuck as pending anymore.
+- Minimum required version of django-celery-beat is now 2.4.0 which adds support for Django 4.1
+
 ## [2.0.0] - 2022-09-02
 
 Contributors: [@lociii](https://github.com/lociii)
