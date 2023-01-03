@@ -5,7 +5,7 @@ from kombu.entity import Queue
 from django_celery_token_bucket.bucket import TokenBucket
 
 
-@shared_task
+@shared_task(ignore_result=True)
 def token_bucket_token():
     return 1
 
