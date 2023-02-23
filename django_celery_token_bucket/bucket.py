@@ -1,9 +1,11 @@
 import json
 from dataclasses import dataclass
+from datetime import timedelta
 from typing import Optional
 
 from celery import schedules
 from django.conf import settings
+from django_celery_beat.models import SECONDS
 
 
 @dataclass
@@ -19,9 +21,10 @@ class TokenBucket:
     """
 
     name: str
-    schedule: schedules.crontab
     amount: int
     maximum: int
+    schedule: schedules.crontab = None
+    interval_in_seconds: int = None
     token_refill_queue: Optional[str] = None
 
     QUEUE_PREFIX: str = "token_bucket_"
@@ -35,6 +38,15 @@ class TokenBucket:
             durable=True,
         )
 
+    def _get_or_create_interval(self):
+        from django_celery_beat.models import IntervalSchedule
+
+        schedule = schedules.schedule(timedelta(**{self.interval_in_seconds: SECONDS}), )
+        intervalschedule = IntervalSchedule.from_schedule(schedule=schedule)
+        if not intervalschedule.id:
+            intervalschedule.save()
+        return intervalschedule
+
     def _get_or_create_schedule(self):
         from django_celery_beat.models import CrontabSchedule
 
@@ -46,7 +58,18 @@ class TokenBucket:
     def create_periodic_task(self):
         from django_celery_beat.models import PeriodicTask
 
-        crontabschedule = self._get_or_create_schedule()
+        defaults = dict(
+            queue=self.token_refill_queue,
+            kwargs=json.dumps(dict(name=self.name)),
+            task="django_celery_token_bucket.tasks.token_bucket_refill",
+            crontab=None,
+            interval=None
+        )
+
+        if self.schedule:
+            defaults['crontab'] = self._get_or_create_schedule()
+        elif self.interval_in_seconds:
+            defaults['interval'] = self._get_or_create_interval()
 
         if not self.token_refill_queue:
             try:
@@ -56,11 +79,5 @@ class TokenBucket:
 
         PeriodicTask.objects.update_or_create(
             name=f"{self.PERIODICTASK_PREFIX}{self.name}",
-            defaults=dict(
-                queue=self.token_refill_queue,
-                kwargs=json.dumps(dict(name=self.name)),
-                task="django_celery_token_bucket.tasks.token_bucket_refill",
-                interval=None,
-                crontab=crontabschedule,
-            ),
+            defaults=defaults,
         )
