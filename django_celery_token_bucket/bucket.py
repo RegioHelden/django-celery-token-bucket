@@ -1,11 +1,9 @@
 import json
 from dataclasses import dataclass
-from datetime import timedelta
 from typing import Optional
 
 from celery import schedules
 from django.conf import settings
-from django_celery_beat.models import SECONDS
 
 
 @dataclass
@@ -40,11 +38,9 @@ class TokenBucket:
 
     def _get_or_create_interval(self):
         from django_celery_beat.models import IntervalSchedule
+        from django_celery_beat.models import SECONDS
 
-        schedule = schedules.schedule(timedelta(**{self.interval_in_seconds: SECONDS}), )
-        intervalschedule = IntervalSchedule.from_schedule(schedule=schedule)
-        if not intervalschedule.id:
-            intervalschedule.save()
+        intervalschedule, created = IntervalSchedule.objects.get_or_create(period=SECONDS, every=self.interval_in_seconds)
         return intervalschedule
 
     def _get_or_create_schedule(self):
