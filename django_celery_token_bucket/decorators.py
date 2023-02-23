@@ -1,4 +1,5 @@
 from functools import wraps
+from typing import Iterable
 
 from django.conf import settings
 from kombu.connection import Connection
@@ -7,7 +8,7 @@ from kombu.entity import Queue
 from django_celery_token_bucket.bucket import TokenBucket
 
 
-def rate_limit(token_bucket_name: str | list[str], countdown: int = 60, affect_task_retries: bool = False, weight: int = 1):
+def rate_limit(token_bucket_name: str | Iterable[str], countdown: int = 60, affect_task_retries: bool = False, weight: int = 1):
     def decorator_func(func):
         @wraps(func)
         def function(self, *args, **kwargs):
