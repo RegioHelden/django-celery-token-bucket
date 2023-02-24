@@ -65,6 +65,9 @@ class TokenBucket:
         if self.schedule is None and self.interval_in_seconds is None:
             raise AssertionError(f'{self.name}: schedule or interval_in_seconds has to be set')
 
+        if self.schedule and self.interval_in_seconds:
+            raise AssertionError(f'{self.name}: schedule and interval_in_seconds can not be used together')
+
         if self.schedule:
             defaults['crontab'] = self._get_or_create_schedule()
         elif self.interval_in_seconds:
