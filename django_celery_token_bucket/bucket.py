@@ -40,7 +40,7 @@ class TokenBucket:
         from django_celery_beat.models import IntervalSchedule
         from django_celery_beat.models import SECONDS
 
-        intervalschedule, created = IntervalSchedule.objects.get_or_create(period=SECONDS, every=self.interval_in_seconds)
+        intervalschedule, _created = IntervalSchedule.objects.get_or_create(period=SECONDS, every=self.interval_in_seconds)
         return intervalschedule
 
     def _get_or_create_schedule(self):
@@ -61,6 +61,9 @@ class TokenBucket:
             crontab=None,
             interval=None
         )
+
+        if self.schedule is None and self.interval_in_seconds is None:
+            raise AssertionError(f'{self.name}: schedule or interval_in_seconds has to be set')
 
         if self.schedule:
             defaults['crontab'] = self._get_or_create_schedule()
