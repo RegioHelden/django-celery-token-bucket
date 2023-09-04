@@ -19,7 +19,7 @@ Add to `settings.py` of your project.
 ```python
 from typing import Dict
 from celery import schedules
-from django_celery_token_bucket import TokenBucket
+from django_celery_token_bucket.bucket import TokenBucket
 
 INSTALLED_APPS = [
     ...,
