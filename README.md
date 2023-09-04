@@ -75,7 +75,7 @@ from django_celery_token_bucket.decorators import rate_limit
 
 
 @celery_app.task(bind=True)
-@rate_limit(token_bucket="my_api_client", countdown=300)
+@rate_limit(token_bucket_name="my_api_client", countdown=300)
 def my_tasK(self, *args, **kwargs):
     return
 ```
