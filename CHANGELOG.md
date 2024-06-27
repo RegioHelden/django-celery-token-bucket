@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0] - unreleased
+
+Contributors: [@lociii](https://github.com/lociii)
+
+- Remove support for EOL `Django` versions `3.2`, `4.0` and `4.1`
+- Add support for `Django` version `5.0`
+- Minimum required `celery` version is now `5.3.0`, released 06/2023
+- Minimum required `django-celery-beat` version is now `2.5.0`, releases 03/2023
+- Minimum required `kombu` version is now `5.3.0`, releases 06/2023
+- Renovate build environment
+
 ## [2.1.0] - 2023-01-03
 
 Contributors: [@lociii](https://github.com/lociii)

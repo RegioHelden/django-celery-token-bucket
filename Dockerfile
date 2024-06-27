@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bookworm
 
 ENV PYTHONUNBUFFERED 1
 ENV LC_ALL=C.UTF-8
@@ -20,14 +20,14 @@ WORKDIR /app
 
 USER app
 
-ADD requirements-docker.txt /app/
+ADD requirements.txt /app/
 
 ENV PATH /home/app/venv/bin:${PATH}
 
 RUN python3 -m venv ~/venv && \
     pip install --upgrade pip && \
     pip install wheel && \
-    pip install -r requirements-docker.txt
+    pip install -r requirements.txt
 
 ADD . /app/
 
