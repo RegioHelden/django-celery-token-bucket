@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.0] - unreleased
+## [3.0.0] - 2024-06-27
 
 Contributors: [@lociii](https://github.com/lociii)
 
