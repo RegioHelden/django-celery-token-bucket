@@ -17,7 +17,7 @@ class TokenBucketTokenTaskTestCase(TestCase):
         """
         test that the message task just returns 1
         """
-        self.assertEquals(1, tasks.token_bucket_token())
+        self.assertEqual(1, tasks.token_bucket_token())
 
 
 class TokenBucketRefillTaskTestCase(TestCase):
