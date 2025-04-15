@@ -2,12 +2,14 @@
 name = "django-celery-token-bucket"
 version = "3.0.0"
 license = "MIT"
-requires-python = ">=3.11"
+requires-python = ">=3.8"
 description = "A token bucket implementation for celery rate limiting in Django"
 readme = "README.md"
 keywords = ['django', 'celery', 'token', 'bucket', 'rate limiting']
-authors = [{ name = "Jens Nistler", email = "opensource@jensnistler.de" },
-{ name = "Richard Ackon", email = "richard.ackon@stroeer-online-marketing.de" }]
+authors = [
+    { name = "Jens Nistler", email = "opensource@jensnistler.de" },
+    { name = "Richard Ackon", email = "richard.ackon@stroeer-online-marketing.de" },
+]
 maintainers = [
     { name = "RegioHelden GmbH", email = "opensource@regiohelden.de" },
 ]
