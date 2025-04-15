@@ -1,8 +1,8 @@
 from functools import wraps
-from kombu.connection import Connection
-from kombu.entity import Queue
 
 from django.conf import settings
+from kombu.connection import Connection
+from kombu.entity import Queue
 
 from django_celery_token_bucket.bucket import TokenBucket
 
@@ -14,8 +14,8 @@ def rate_limit(token_bucket_name: str, countdown: int = 60, affect_task_retries:
             try:
                 token_bucket: TokenBucket = settings.CELERY_TOKEN_BUCKETS[token_bucket_name]
                 token_queue: Queue = token_bucket.get_queue()
-            except KeyError:
-                raise Exception(f"bucket '{token_bucket_name}' is not registered")
+            except KeyError as e:
+                raise Exception(f"bucket '{token_bucket_name}' is not registered") from e
 
             connection: Connection
             with self.app.connection_for_read() as connection:

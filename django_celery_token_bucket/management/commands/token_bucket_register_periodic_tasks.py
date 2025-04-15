@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import ClassVar
 
 from django.conf import settings
 from django.core.management import BaseCommand
@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = 'Register scheduled refill jobs for all token buckets'
+    help = "Register scheduled refill jobs for all token buckets"
 
-    valid_bucket_names: List[str] = []
+    valid_bucket_names: ClassVar[list[str]] = []
 
     def handle(self, *args, **options):
         token_bucket: TokenBucket
@@ -21,8 +21,10 @@ class Command(BaseCommand):
             # add a periodic task to our main queue to refill the tokens
             token_bucket.create_periodic_task()
             logging.info(
-                f"created/updated periodic task to refill '{token_bucket.name}' with {token_bucket.amount} "
-                f"new token(s) every {token_bucket.schedule}"
+                "created/updated periodic task to refill '%s' with %s new token(s) every %s",
+                token_bucket.name,
+                token_bucket.amount,
+                token_bucket.schedule,
             )
 
             # mark bucket name as valid

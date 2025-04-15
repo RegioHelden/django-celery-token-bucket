@@ -1,9 +1,8 @@
-import mock
+from unittest import mock
 
 from django.test import TestCase
 
 from django_celery_token_bucket import tasks
-
 
 """
 all tests are based on CELERY_TOKEN_BUCKETS in settings.py of the docker module

@@ -1,0 +1,3 @@
+-r requirements-ci.txt
+ipython==9.1.0
+tblib==3.1.0

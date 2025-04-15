@@ -1,6 +1,6 @@
 from types import SimpleNamespace
+from unittest import mock
 
-import mock
 from celery import schedules
 from django.test import TestCase
 
@@ -60,11 +60,11 @@ class TokenBucketTestCase(TestCase):
 
         mock_periodictask.objects.update_or_create.assert_called_once_with(
             name="token_bucket_refill_my_custom_api",
-            defaults=dict(
-                queue="celery",
-                kwargs='{"name": "my_custom_api"}',
-                task="django_celery_token_bucket.tasks.token_bucket_refill",
-                interval=None,
-                crontab=token_bucket_get_or_create_schedule_return_value,
-            ),
+            defaults={
+                "queue": "celery",
+                "kwargs": '{"name": "my_custom_api"}',
+                "task": "django_celery_token_bucket.tasks.token_bucket_refill",
+                "interval": None,
+                "crontab": token_bucket_get_or_create_schedule_return_value,
+            },
         )
