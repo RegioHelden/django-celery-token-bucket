@@ -1,6 +1,6 @@
 [project]
 name = "django-celery-token-bucket"
-version = "4.0.0"
+dynamic = ["version"]
 license = "MIT"
 requires-python = ">=3.11"
 description = "A token bucket implementation for celery rate limiting in Django"
@@ -45,6 +45,10 @@ Changelog = "https://github.com/RegioHelden/django-celery-token-bucket/blob/main
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "version"
+pattern = "(?P<version>.+)"
 
 [tool.hatch.build.targets.wheel]
 packages = ["django_celery_token_bucket"]
