@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Dict
 
 from celery import schedules
 
@@ -88,7 +89,7 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CELERY_TOKEN_BUCKETS: dict[str, TokenBucket] = {
+CELERY_TOKEN_BUCKETS: Dict[str, TokenBucket] = {
     "my_custom_api": TokenBucket(
         name="my_custom_api",
         schedule=schedules.crontab(minute=0),  # once every hour
