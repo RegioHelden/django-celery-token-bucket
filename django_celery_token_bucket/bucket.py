@@ -1,6 +1,5 @@
 import json
 from dataclasses import dataclass
-from typing import Union
 
 from celery import schedules
 from django.conf import settings
@@ -22,7 +21,7 @@ class TokenBucket:
     schedule: schedules.crontab
     amount: int
     maximum: int
-    token_refill_queue: Union[str, None] = None
+    token_refill_queue: str | None = None
 
     DEFAULT_QUEUE_NAME = "celery"
     QUEUE_PREFIX: str = "token_bucket_"
