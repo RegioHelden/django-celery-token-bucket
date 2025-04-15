@@ -1,6 +1,5 @@
 import json
 from dataclasses import dataclass
-from typing import Optional
 
 from celery import schedules
 from django.conf import settings
@@ -22,13 +21,15 @@ class TokenBucket:
     schedule: schedules.crontab
     amount: int
     maximum: int
-    token_refill_queue: Optional[str] = None
+    token_refill_queue: str | None = None
 
+    DEFAULT_QUEUE_NAME = "celery"
     QUEUE_PREFIX: str = "token_bucket_"
     PERIODICTASK_PREFIX: str = "token_bucket_refill_"
 
     def get_queue(self):
         from kombu.entity import Queue
+
         return Queue(
             name=f"{self.QUEUE_PREFIX}{self.name}",
             max_length=self.maximum,
@@ -52,15 +53,15 @@ class TokenBucket:
             try:
                 self.token_refill_queue = settings.CELERY_DEFAULT_QUEUE
             except AttributeError:
-                self.token_refill_queue = 'celery'
+                self.token_refill_queue = self.DEFAULT_QUEUE_NAME
 
         PeriodicTask.objects.update_or_create(
             name=f"{self.PERIODICTASK_PREFIX}{self.name}",
-            defaults=dict(
-                queue=self.token_refill_queue,
-                kwargs=json.dumps(dict(name=self.name)),
-                task="django_celery_token_bucket.tasks.token_bucket_refill",
-                interval=None,
-                crontab=crontabschedule,
-            ),
+            defaults={
+                "queue": self.token_refill_queue,
+                "kwargs": json.dumps({"name": self.name}),
+                "task": "django_celery_token_bucket.tasks.token_bucket_refill",
+                "interval": None,
+                "crontab": crontabschedule,
+            },
         )

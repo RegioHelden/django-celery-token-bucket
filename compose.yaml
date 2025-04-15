@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    user: app
+    command: /app/example/manage.py test
+    volumes:
+      - .:/app:cached
+    environment:
+      SHELL: /bin/bash
+      IPYTHONDIR: /app/.ipython
+      HISTFILE: /app/.bash_history
+      PYTHONPATH: /app  # make django_celery_token_bucket available without installation
+    restart: "no"
