@@ -1,2 +1,2 @@
 celery==5.5.1
-django-celery-beat==2.7.0
+django-celery-beat==2.8.0
