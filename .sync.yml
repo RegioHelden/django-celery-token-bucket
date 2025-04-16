@@ -1,0 +1,13 @@
+---
+:global:
+  module_rootname: "django_celery_token_bucket"
+  module_description: "A token bucket implementation for celery rate limiting in Django"
+  module_keywords: ["django", "celery", "token", "bucket", "rate limiting"]
+  dependencies:
+    [
+      "celery>=5.5.0,<6.0.0",
+      "django>=4.2,<6.0",
+      "django-celery-beat>=2.5.0,<3.0.0",
+      "kombu>=5.5.0,<6.0.0",
+    ]
+  max_line_length: 120
