@@ -1,3 +1,7 @@
+# -------------------------------------------
+# Managed by modulesync - DO NOT EDIT
+# -------------------------------------------
+
 [project]
 name = "django-celery-token-bucket"
 dynamic = ["version"]
@@ -7,8 +11,7 @@ description = "A token bucket implementation for celery rate limiting in Django"
 readme = "README.md"
 keywords = ["django", "celery", "token", "bucket", "rate limiting"]
 authors = [
-    { name = "Jens Nistler", email = "opensource@jensnistler.de" },
-    { name = "Richard Ackon", email = "richard.ackon@stroeer-online-marketing.de" },
+    { name = "RegioHelden GmbH", email = "opensource@regiohelden.de" },
 ]
 maintainers = [
     { name = "RegioHelden GmbH", email = "opensource@regiohelden.de" },
@@ -28,16 +31,11 @@ classifiers = [
     "Topic :: Software Development",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = [
-    "celery>=5.5.0,<6.0.0",
-    "django>=4.2,<6.0",
-    "django-celery-beat>=2.5.0,<3.0.0",
-    "kombu>=5.5.0,<6.0.0",
-]
+dependencies = ["celery>=5.5.0,<6.0.0", "django>=4.2,<6.0", "django-celery-beat>=2.5.0,<3.0.0", "kombu>=5.5.0,<6.0.0"]
 
 [project.urls]
 Homepage = "https://github.com/RegioHelden/django-celery-token-bucket"
-Documentation = "https://github.com/RegioHelden/django-celery-token-bucket/blob/master/README.md"
+Documentation = "https://github.com/RegioHelden/django-celery-token-bucket/blob/main/README.md"
 Repository = "https://github.com/RegioHelden/django-celery-token-bucket.git"
 Issues = "https://github.com/RegioHelden/django-celery-token-bucket/issues"
 Changelog = "https://github.com/RegioHelden/django-celery-token-bucket/blob/main/CHANGELOG.md"
@@ -65,7 +63,6 @@ exclude = [
     "__pycache",
     "docs",
     "migrations",
-    "rh_django_shared",
     "src",
 ]
 line-length = 120
