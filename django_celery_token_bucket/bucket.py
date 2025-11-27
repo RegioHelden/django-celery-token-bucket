@@ -28,7 +28,7 @@ class TokenBucket:
     PERIODICTASK_PREFIX: str = "token_bucket_refill_"
 
     def get_queue(self):
-        from kombu.entity import Queue
+        from kombu.entity import Queue  # noqa: PLC0415
 
         return Queue(
             name=f"{self.QUEUE_PREFIX}{self.name}",
@@ -37,7 +37,7 @@ class TokenBucket:
         )
 
     def _get_or_create_schedule(self):
-        from django_celery_beat.models import CrontabSchedule
+        from django_celery_beat.models import CrontabSchedule  # noqa: PLC0415
 
         crontabschedule = CrontabSchedule.from_schedule(schedule=self.schedule)
         if not crontabschedule.id:
@@ -45,7 +45,7 @@ class TokenBucket:
         return crontabschedule
 
     def create_periodic_task(self):
-        from django_celery_beat.models import PeriodicTask
+        from django_celery_beat.models import PeriodicTask  # noqa: PLC0415
 
         crontabschedule = self._get_or_create_schedule()
 
