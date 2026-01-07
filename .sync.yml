@@ -6,7 +6,7 @@
   dependencies:
     [
       "celery>=5.5.0,<6.0.0",
-      "django>=4.2,<6.0",
+      "django>=4.2,<6.1",
       "django-celery-beat>=2.5.0,<3.0.0",
       "kombu>=5.5.0,<6.0.0",
     ]
