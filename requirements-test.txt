@@ -1,4 +1,4 @@
 -r requirements-ci.txt
-Django==6.0.2
+Django==6.0.3
 ipython==9.10.0
 tblib==3.2.2
