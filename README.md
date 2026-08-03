@@ -23,7 +23,7 @@ from django_celery_token_bucket.bucket import TokenBucket
 
 INSTALLED_APPS = [
     ...,
-    'django_celery_token_bucket'
+    "django_celery_token_bucket",
 ]
 
 CELERY_TOKEN_BUCKETS: Dict[str, TokenBucket] = {
