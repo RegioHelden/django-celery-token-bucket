@@ -28,10 +28,11 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["celery>=5.5.0,<6.0.0", "django>=4.2,<6.1", "django-celery-beat>=2.5.0,<3.0.0", "kombu>=5.5.0,<6.0.0"]
+dependencies = ["celery>=5.5.0,<6.0.0", "django>=5.2,<6.2", "django-celery-beat>=2.5.0,<3.0.0", "kombu>=5.5.0,<6.0.0"]
 
 [project.urls]
 Homepage = "https://github.com/RegioHelden/django-celery-token-bucket"
